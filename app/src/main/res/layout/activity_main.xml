@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/bottomNavigationBar"
+        android:id="@+id/fragmentContainer"/>
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:id="@+id/bottomNavigationBar"
+        android:layout_alignParentBottom="true"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottomIconBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#ffffff"
+            android:backgroundTint="?android:attr/windowBackground"
+            app:itemIconTint="@color/selector"
+            app:labelVisibilityMode="unlabeled"
+            app:menu="@menu/bottom_navigation_bar" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+</RelativeLayout>

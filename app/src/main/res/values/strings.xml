@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">InstagramDemo</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="signUp">Don\'t have an account? <b><font color="#00183C">Sign Up</font></b></string>
+    <string name="login">Already have an account?<b><font color="#00183C">Log in.</font></b></string>
+    <string name="fromFacebook"><h6>from\n</h6><b><h4><font color="#000000">FACEBOOK</font></h4></b></string>
+    <string name="editProfile">Edit Profile</string>
+</resources>
