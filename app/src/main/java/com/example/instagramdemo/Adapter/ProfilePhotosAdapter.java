@@ -1,16 +1,21 @@
 package com.example.instagramdemo.Adapter;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.instagramdemo.Fragments.PostFragment;
 import com.example.instagramdemo.Model.Post;
 import com.example.instagramdemo.R;
+import com.google.gson.Gson;
 
 import java.util.List;
 
@@ -34,10 +39,24 @@ public class ProfilePhotosAdapter extends RecyclerView.Adapter<ProfilePhotosAdap
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
 
-        Post post = mPosts.get(position);
+        final Post post = mPosts.get(position);
         holder.postImage.setImageBitmap(post.getImage());
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Gson gson = new Gson();
+                String json = gson.toJson(mPosts);
+                SharedPreferences.Editor editor = mContext.getSharedPreferences("posts", Context.MODE_PRIVATE).edit();
+                editor.putInt("position", position);
+                editor.putString("posts", json);
+                editor.apply();
+                Log.i("JSON", json);
+                ((FragmentActivity)mContext).getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, new PostFragment()).addToBackStack(null).commit();
+
+            }
+        });
 
     }
 

@@ -3,6 +3,7 @@ package com.example.instagramdemo;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.content.Context;
 import android.content.Intent;
@@ -22,6 +23,8 @@ public class MainActivity extends AppCompatActivity {
 
     BottomNavigationView bottomNavigationView;
     Fragment selectedFragment = null;
+    public static int globalStackedFragments = 0;
+    public static FragmentManager fragmentManager;
 
     @Override
     protected void onStart() {
@@ -69,11 +72,20 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        fragmentManager = getSupportFragmentManager();
+
+        fragmentManager.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+            @Override
+            public void onBackStackChanged() {
+                globalStackedFragments = fragmentManager.getBackStackEntryCount();
+            }
+        });
+
         Bundle intent = getIntent().getExtras();
         if(intent != null){
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer, new ProfileFragment()).commit();
+            fragmentManager.beginTransaction().replace(R.id.fragmentContainer, new ProfileFragment()).commit();
         }else{
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer,new HomeFragment()).commit();
+            fragmentManager.beginTransaction().replace(R.id.fragmentContainer,new HomeFragment()).commit();
         }
     }
 }

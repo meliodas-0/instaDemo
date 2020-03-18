@@ -6,12 +6,13 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,8 +21,10 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import androidx.appcompat.widget.Toolbar;
 
 import com.example.instagramdemo.Adapter.ProfilePhotosAdapter;
+import com.example.instagramdemo.MainActivity;
 import com.example.instagramdemo.Model.Post;
 import com.example.instagramdemo.Model.User;
 import com.example.instagramdemo.R;
@@ -50,6 +53,7 @@ public class ProfileFragment extends Fragment {
     RecyclerView recyclerView;
     ProfilePhotosAdapter myPostsAdapter, savedPostsAdapter;
     List<Post> myPostList, savedPostList;
+    Toolbar toolbar;
 
     public void editProfileClicked(View view){
 
@@ -102,32 +106,29 @@ public class ProfileFragment extends Fragment {
 
         parseUser = ParseUser.getCurrentUser();
 
-        profilePic = view.findViewById(R.id.profileProfilePic);
-        noOfPosts = view.findViewById(R.id.profilePostsTextView);
-        noOfFollowers = view.findViewById(R.id.profileFollowersTextView);
-        noOfFollowings = view.findViewById(R.id.profileFollowingTextView);
-        fullname = view.findViewById(R.id.profileFullnameTextView);
-        bio = view.findViewById(R.id.profileBioTextView);
-        username = view.findViewById(R.id.profileUsernameTextView);
-        editProfile = view.findViewById(R.id.profileEditProfileButton);
-        posts = view.findViewById(R.id.profileGridImageButton);
-        saved = view.findViewById(R.id.profileSavedImageButton);
-        recyclerView = view.findViewById(R.id.profilePostsRecyclerView);
-        recyclerView.setHasFixedSize(true);
-        LinearLayoutManager manager = new GridLayoutManager(getContext(), 3);
-        recyclerView.setLayoutManager(manager);
-        myPostList = new ArrayList<>();
-        savedPostList = new ArrayList<>();
-        savedPostsAdapter = new ProfilePhotosAdapter(getContext(), savedPostList);
-        myPostsAdapter = new ProfilePhotosAdapter(getContext(), myPostList);
-        recyclerView.setAdapter(myPostsAdapter);
+        findViewByIds(view);
 
-        SharedPreferences prefs = getContext().getSharedPreferences("PREFS", Context.MODE_PRIVATE);
-        profileId = prefs.getString("profileId", "none");
+        Toast.makeText(getContext(), MainActivity.fragmentManager.getBackStackEntryCount()+"", Toast.LENGTH_SHORT).show();
+
+        if(MainActivity.fragmentManager.getBackStackEntryCount() >= 1){
+
+            ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+            ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    ((FragmentActivity)getContext()).getSupportFragmentManager().popBackStack();
+                }
+            });
+        }
+
+        setRecyclerView();
+
+        sharedPrefs();
+
         userProfile();
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putString("profileId", parseUser.getUsername());
-        editor.apply();
 
         if(profileId.equals(parseUser.getUsername())){
             editProfile.setText(R.string.editProfile);
@@ -141,9 +142,52 @@ public class ProfileFragment extends Fragment {
         setPosts();
         setSavedPosts();
 
-        Log.i("No of Posts", myPostList.size()+"");
-        Log.i("No of SavedPosts", savedPostList.size()+"");
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+    }
+
+    private void sharedPrefs() {
+
+        SharedPreferences prefs = getContext().getSharedPreferences("PREFS", Context.MODE_PRIVATE);
+        profileId = prefs.getString("profileId", "none");
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("profileId", parseUser.getUsername());
+        editor.apply();
+    }
+
+    private void setRecyclerView() {
+
+        recyclerView.setHasFixedSize(true);
+        LinearLayoutManager manager = new GridLayoutManager(getContext(), 3);
+        recyclerView.setLayoutManager(manager);
+        myPostList = new ArrayList<>();
+        savedPostList = new ArrayList<>();
+        savedPostsAdapter = new ProfilePhotosAdapter(getContext(), savedPostList);
+        myPostsAdapter = new ProfilePhotosAdapter(getContext(), myPostList);
+        recyclerView.setAdapter(myPostsAdapter);
+
+    }
+
+    private void findViewByIds(View view) {
+
+        profilePic = view.findViewById(R.id.profileProfilePic);
+        noOfPosts = view.findViewById(R.id.profilePostsTextView);
+        noOfFollowers = view.findViewById(R.id.profileFollowersTextView);
+        noOfFollowings = view.findViewById(R.id.profileFollowingTextView);
+        fullname = view.findViewById(R.id.profileFullnameTextView);
+        bio = view.findViewById(R.id.profileBioTextView);
+        username = view.findViewById(R.id.profileUsernameTextView);
+        editProfile = view.findViewById(R.id.profileEditProfileButton);
+        posts = view.findViewById(R.id.profileGridImageButton);
+        saved = view.findViewById(R.id.profileSavedImageButton);
+        recyclerView = view.findViewById(R.id.profilePostsRecyclerView);
+        toolbar = view.findViewById(R.id.profileToolbar);
+
     }
 
     private void onClickListeners() {
@@ -280,7 +324,7 @@ public class ProfileFragment extends Fragment {
                             public void done(byte[] data, ParseException e) {
                                 if(e == null){
                                     Bitmap image = BitmapFactory.decodeByteArray(data, 0, data.length);
-                                    Post post = new Post(parseUser.getUsername(), object.get("description").toString(), object.getObjectId(), image);
+                                    Post post = new Post(profileId, object.get("description").toString(), object.getObjectId(), image);
                                     myPostList.add(post);
                                     myPostsAdapter.notifyDataSetChanged();
                                 }
@@ -297,7 +341,7 @@ public class ProfileFragment extends Fragment {
 
     private void setSavedPosts(){
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Saves");
-        query.whereEqualTo("savedBy", parseUser.getUsername());
+        query.whereEqualTo("savedBy", profileId);
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> objects, ParseException e) {

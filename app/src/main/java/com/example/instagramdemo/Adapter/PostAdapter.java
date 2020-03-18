@@ -15,9 +15,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.instagramdemo.CommentsActivity;
+import com.example.instagramdemo.Fragments.ProfileFragment;
 import com.example.instagramdemo.MainActivity;
 import com.example.instagramdemo.Model.Post;
 import com.example.instagramdemo.Model.User;
@@ -132,13 +135,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
         holder.username.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(mContext, MainActivity.class);
-                intent.putExtra("publisher", post.getUsername());
+//                Intent intent = new Intent(mContext, MainActivity.class);
+//                intent.putExtra("publisher", post.getUsername());
                 SharedPreferences sharedPreferences = mContext.getSharedPreferences("PREFS", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString("profileId", holder.username.getText().toString());
                 editor.apply();
-                mContext.startActivity(intent);
+                ((FragmentActivity)mContext).getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, new ProfileFragment()).addToBackStack(null).commit();
+                //mContext.startActivity(intent);
             }
         });
 

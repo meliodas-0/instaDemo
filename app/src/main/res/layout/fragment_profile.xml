@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#ffff"
     tools:context=".Fragments.ProfileFragment"
     android:id="@+id/frameLayout">
 
@@ -12,43 +13,48 @@
         android:background="?android:attr/windowBackground"
         android:id="@+id/toolbar">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/profileToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?android:attr/windowBackground"
+            android:background="?android:attr/windowBackground">
 
-            android:layout_marginTop="10dp">
+                <TextView
+                    android:id="@+id/profileUsernameTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:maxLines="1"
+                    android:text="USERNAME"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:maxLines="1"
-                android:text="USERNAME"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="30dp"
-                android:textStyle="bold"
-                android:id="@+id/profileUsernameTextView"
-                android:textColor="@color/colorPrimaryDark"/>
-            <ImageView
-                android:layout_width="27dp"
-                android:layout_height="27dp"
-                android:layout_margin="5dp"
-                android:layout_marginBottom="10dp"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="20dp"
-                android:id="@+id/profileOptionsImageView"
-                android:src="@drawable/optionicon"/>
+                <ImageView
+                    android:id="@+id/profileOptionsImageView"
+                    android:layout_width="27dp"
+                    android:layout_height="27dp"
+                    android:layout_centerVertical="true"
+                    android:layout_margin="5dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginBottom="10dp"
+                    android:src="@drawable/optionicon" />
+
 
         </RelativeLayout>
+    </androidx.appcompat.widget.Toolbar>
 
 
     </com.google.android.material.appbar.AppBarLayout>
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_below="@+id/toolbar"
         android:id="@+id/profileScrollview">
 
