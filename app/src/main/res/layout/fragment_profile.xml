@@ -208,17 +208,20 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:scaleType="fitCenter"
                     android:id="@+id/profileGridImageButton"
                     style="?android:attr/buttonBarButtonStyle"
                     android:src="@drawable/ic_grid"
                     android:backgroundTint="@color/selector"/>
                 <ImageButton
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitCenter"
+                    android:layout_gravity="center"
                     android:layout_weight="1"
                     android:id="@+id/profileSavedImageButton"
                     style="?android:attr/buttonBarButtonStyle"
-                    android:src="@drawable/ic_save_unfill"
+                    android:src="@drawable/save_unfill"
                     android:backgroundTint="@color/selector"/>
 
             </LinearLayout>

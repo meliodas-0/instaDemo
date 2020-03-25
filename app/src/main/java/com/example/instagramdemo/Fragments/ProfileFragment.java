@@ -1,6 +1,7 @@
 package com.example.instagramdemo.Fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -24,6 +25,7 @@ import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.instagramdemo.Adapter.ProfilePhotosAdapter;
+import com.example.instagramdemo.EditProfileActivity;
 import com.example.instagramdemo.MainActivity;
 import com.example.instagramdemo.Model.Post;
 import com.example.instagramdemo.Model.User;
@@ -58,8 +60,10 @@ public class ProfileFragment extends Fragment {
     public void editProfileClicked(View view){
 
         String s = editProfile.getText().toString();
-        if(s.equals(R.string.editProfile)){
-            //edit profile of the current user
+        if(s.equals("Edit Profile")){
+            Toast.makeText(getContext(), "clicked", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(getContext(), EditProfileActivity.class);
+            startActivity(intent);
         }else if(s.equals("Follow")){
             ParseObject object = new ParseObject("FollowList");
             object.put("follower", parseUser.getUsername());
@@ -236,9 +240,9 @@ public class ProfileFragment extends Fragment {
                         public void done(byte[] data, ParseException e) {
                             if(e == null){
                                 Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
-                                User user = new User(object.getObjectId(),object.get("username").toString(),bitmap, object.get("bio").toString());
+                                User user = new User(object.getObjectId(),object.get("username").toString(), object.getString("fullname"),bitmap, object.get("bio").toString());
                                 username.setText(user.getUsername());
-                                fullname.setText(user.getUsername());
+                                fullname.setText(user.getFullName());
                                 profilePic.setImageBitmap(user.getImageurl());
                                 bio.setText(user.getBio());
                             }

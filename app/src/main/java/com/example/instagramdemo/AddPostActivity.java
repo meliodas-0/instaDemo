@@ -111,21 +111,6 @@ public class AddPostActivity extends AppCompatActivity {
             }
         }
 
-//        if(requestCode == 1){
-//            if(data != null) {
-//                Uri selectedImage = data.getData();
-//                CropImage.activity()
-//                        .setGuidelines(CropImageView.Guidelines.ON)
-//                        .start(this);
-//                ImageDecoder.Source source = ImageDecoder.createSource(getApplicationContext().getContentResolver(), selectedImage);
-//                try {
-//                    Bitmap image = ImageDecoder.decodeBitmap(source);
-//                    imageSelected.setImageBitmap(image);
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }
     }
 
     @Override

@@ -102,7 +102,7 @@ public class SearchFragment extends Fragment {
             public void done(List<ParseUser> users, ParseException e) {
                 if(e == null && users.size()>0){
                     mUsers.clear();
-                    for(ParseUser object : users){
+                    for(final ParseUser object : users){
                         final Bitmap[] bitmap = new Bitmap[1];//= BitmapFactory.decodeResource(getResources(),R.drawable.writtenlogo);
                         final User[] user = new User[1];
                         final String objectId = object.getObjectId();
@@ -115,7 +115,7 @@ public class SearchFragment extends Fragment {
                                     if(e == null){
                                         bitmap[0] = BitmapFactory.decodeByteArray(data,0, data.length);
 
-                                        user[0] = new User(objectId, objectUsername, bitmap[0]);
+                                        user[0] = new User(objectId, objectUsername, object.getString("fullname"), bitmap[0], object.getString("bio"));
                                         mUsers.add(user[0]);
                                         adapter.notifyDataSetChanged();
                                     }

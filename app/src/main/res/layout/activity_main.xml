@@ -21,11 +21,13 @@
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottomIconBar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:background="#ffffff"
             android:backgroundTint="?android:attr/windowBackground"
             app:itemIconTint="@color/selector"
             app:labelVisibilityMode="unlabeled"
+            app:itemIconSize="25dp"
+            android:touchscreenBlocksFocus="true"
             app:menu="@menu/bottom_navigation_bar" />
     </com.google.android.material.appbar.AppBarLayout>
 

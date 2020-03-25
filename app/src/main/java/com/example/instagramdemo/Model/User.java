@@ -5,14 +5,17 @@ import android.graphics.Bitmap;
 public class User {
 
     private String id;
+    private String fullname;
     private String username;
     private Bitmap imageurl;
-    private String bio = "";
+    private String bio;
 
-    public User(String id, String username, Bitmap imageurl) {
+    public User(String id, String username,String fullname, Bitmap imageurl, String bio) {
         this.id = id;
+        this.fullname = fullname;
         this.username = username;
         this.imageurl = imageurl;
+        this.bio = bio;
     }
 
     public String getId() {
@@ -35,10 +38,6 @@ public class User {
         return imageurl;
     }
 
-    public void setImageurl(Bitmap imageurl) {
-        this.imageurl = imageurl;
-    }
-
     public User(String id, String username, Bitmap imageurl, String bio) {
         this.id = id;
         this.username = username;
@@ -50,7 +49,7 @@ public class User {
         return bio;
     }
 
-    public void setBio(String bio) {
-        this.bio = bio;
+    public String getFullName() {
+        return fullname;
     }
 }

@@ -42,27 +42,28 @@
 
 
             <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="23dp"
+                android:layout_height="23dp"
                 android:id="@+id/like"
-                android:layout_margin="5dp"
+                android:layout_margin="8dp"
+                android:layout_marginStart="10dp"
                 android:tag="LIKE"
-                android:src="@drawable/ic_like_unfill"/>
+                android:src="@drawable/like_unfill"/>
             <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_margin="5dp"
+                android:layout_width="23dp"
+                android:layout_height="23dp"
+                android:layout_margin="8dp"
                 android:id="@+id/comment"
-                android:src="@drawable/ic_commentss"
+                android:src="@drawable/comment_unfill"
                 android:layout_toEndOf="@+id/like"/>
             <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_margin="5dp"
-                android:layout_marginRight="10dp"
+                android:layout_width="23dp"
+                android:layout_height="23dp"
+                android:layout_margin="8dp"
+                android:layout_marginEnd="10dp"
                 android:id="@+id/save"
                 android:layout_alignParentEnd="true"
-                android:src="@drawable/ic_save_unfill"/>
+                android:src="@drawable/save_unfill"/>
 
         </RelativeLayout>
         <TextView

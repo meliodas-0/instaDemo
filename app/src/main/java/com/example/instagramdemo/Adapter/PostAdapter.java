@@ -87,7 +87,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
                 if(holder.save.getTag().toString().equals("save") || holder.save.getTag().toString().isEmpty()){
                     //save
                     holder.save.setTag("saved");
-                    holder.save.setImageResource(R.drawable.ic_saved_fill);
+                    holder.save.setImageResource(R.drawable.save_fill);
 
                     ParseObject object = new ParseObject("Saves");
                     object.put("savedBy", parseUser.getUsername());
@@ -127,7 +127,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
                     });
 
                     holder.save.setTag("save");
-                    holder.save.setImageResource(R.drawable.ic_save_unfill);
+                    holder.save.setImageResource(R.drawable.save_unfill);
                 }
             }
         });
@@ -164,7 +164,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
                                     @Override
                                     public void done(ParseException e) {
                                         if(e==null){
-                                            holder.like.setImageResource(R.drawable.ic_liked);
+                                            holder.like.setImageResource(R.drawable.like_fill_red);
                                             changeLike(true, post.getPostId(), holder.noOfLikes);
                                         }
                                     }
@@ -192,7 +192,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
                         public void done(ParseException e) {
                             if(e==null){
                                 Toast.makeText(mContext, "You have liked this post", Toast.LENGTH_SHORT).show();
-                                holder.like.setImageResource(R.drawable.ic_liked);
+                                holder.like.setImageResource(R.drawable.like_fill_red);
                                 holder.like.setTag("LIKED");
                                 changeLike(true, post.getPostId(), holder.noOfLikes);
                             }
@@ -211,7 +211,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
                                     public void done(ParseException e) {
                                         if(e == null){
                                             Toast.makeText(mContext, "Unliked", Toast.LENGTH_SHORT).show();
-                                            holder.like.setImageResource(R.drawable.ic_like_unfill);
+                                            holder.like.setImageResource(R.drawable.like_unfill);
                                             holder.like.setTag("LIKE");
                                             changeLike(false, post.getPostId(), holder.noOfLikes);
                                         }
@@ -249,7 +249,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
                 if(e == null){
                     if(object != null){
                         save.setTag("saved");
-                        save.setImageResource(R.drawable.ic_saved_fill);
+                        save.setImageResource(R.drawable.save_fill);
                     }
                 }else {
                     save.setTag("save");
@@ -334,10 +334,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
             @Override
             public void done(ParseObject object, ParseException e) {
                 if(e == null && object != null){
-                    imageView.setImageResource(R.drawable.ic_liked);
+                    imageView.setImageResource(R.drawable.like_fill_red);
                     imageView.setTag("LIKED");
                 }else if(object == null){
-                    imageView.setImageResource(R.drawable.ic_like_unfill);
+                    imageView.setImageResource(R.drawable.like_unfill);
                     imageView.setTag("LIKE");
                 }
             }
@@ -417,7 +417,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
                                 if(e == null){
 
                                     Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
-                                    User user1 = new User(newUser.getObjectId(), newUser.getUsername(),bitmap);
+                                    User user1 = new User(newUser.getObjectId(), newUser.getUsername(),newUser.getString("fullname"), bitmap, newUser.getString("bio"));
                                     imageProfile.setImageBitmap(bitmap);
                                     username.setText(user1.getUsername());
                                     publisher.setText(user1.getUsername());
