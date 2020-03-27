@@ -138,14 +138,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
         holder.username.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Intent intent = new Intent(mContext, MainActivity.class);
-//                intent.putExtra("publisher", post.getUsername());
                 SharedPreferences sharedPreferences = mContext.getSharedPreferences("PREFS", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString("profileId", holder.username.getText().toString());
                 editor.apply();
                 ((FragmentActivity)mContext).getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, new ProfileFragment()).addToBackStack(null).commit();
-                //mContext.startActivity(intent);
+
             }
         });
 
@@ -163,28 +161,20 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
                                 ParseObject object = new ParseObject("Likes");
                                 object.put("postId", post.getPostId());
                                 object.put("likedBy",parseUser.getUsername());
-                                object.saveInBackground(new SaveCallback() {
-                                    @Override
-                                    public void done(ParseException e) {
-                                        if(e==null){
-                                            holder.like.setImageResource(R.drawable.like_fill_red);
-                                            changeLike(true, post.getPostId(), holder.noOfLikes);
-                                        }
-                                    }
-                                });
+                                holder.like.setImageResource(R.drawable.like_fill_red);
+                                changeLike(true, post.getPostId(), holder.noOfLikes);
+                                object.saveInBackground();
+                                addNotifications(post.getUsername(), post.getPostId());
                             }
-                            //Toast.makeText(mContext, "You have liked this post", Toast.LENGTH_SHORT).show();
                             holder.like.setTag("LIKED");
                             final Drawable drawable = holder.likeAnimation.getDrawable();
                             if(drawable instanceof AnimatedVectorDrawableCompat){
                                 AnimatedVectorDrawableCompat avdc = (AnimatedVectorDrawableCompat) drawable;
-                                //Toast.makeText(mContext, "AVDC", Toast.LENGTH_SHORT).show();
                                 holder.likeAnimation.setVisibility(View.VISIBLE);
                                 avdc.start();
                             }else if(drawable instanceof AnimatedVectorDrawable){
                                 AnimatedVectorDrawable avd = (AnimatedVectorDrawable) drawable;
                                 holder.likeAnimation.setVisibility(View.VISIBLE);
-                                //Toast.makeText(mContext, "AVD", Toast.LENGTH_SHORT).show();
                                 avd.start();
                             }
                         }
@@ -202,17 +192,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
                     ParseObject object = new ParseObject("Likes");
                     object.put("postId", post.getPostId());
                     object.put("likedBy",parseUser.getUsername());
-                    object.saveInBackground(new SaveCallback() {
-                        @Override
-                        public void done(ParseException e) {
-                            if(e==null){
-                                Toast.makeText(mContext, "You have liked this post", Toast.LENGTH_SHORT).show();
-                                holder.like.setImageResource(R.drawable.like_fill_red);
-                                holder.like.setTag("LIKED");
-                                changeLike(true, post.getPostId(), holder.noOfLikes);
-                            }
-                        }
-                    });
+                    Toast.makeText(mContext, "You have liked this post", Toast.LENGTH_SHORT).show();
+                    holder.like.setImageResource(R.drawable.like_fill_red);
+                    holder.like.setTag("LIKED");
+                    changeLike(true, post.getPostId(), holder.noOfLikes);
+                    object.saveInBackground();
+                    addNotifications(post.getUsername(), post.getPostId());
                 }else {
                     ParseQuery<ParseObject> query = ParseQuery.getQuery("Likes");
                     query.whereEqualTo("postId", post.getPostId());
@@ -411,6 +396,18 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
                 }
             }
         });
+    }
+
+    private void addNotifications(String notificationFor, String postId){
+
+        ParseObject object = new ParseObject("Notifications");
+        object.put("notificationFor", notificationFor);
+        object.put("notificationBy", parseUser.getUsername());
+        object.put("description", "liked your post");
+        object.put("postId", postId);
+        object.put("isPost", true);
+        object.saveInBackground();
+
     }
 
     private void publisherInfo(final ImageView imageProfile, final TextView username, final String publisherName ,final TextView publisher){

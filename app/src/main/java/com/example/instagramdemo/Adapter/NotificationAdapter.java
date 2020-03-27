@@ -14,7 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.instagramdemo.Fragments.PostDetailFragment;
+import com.example.instagramdemo.Fragments.PostFragment;
 import com.example.instagramdemo.Fragments.ProfileFragment;
 import com.example.instagramdemo.Model.Notification;
 import com.example.instagramdemo.Model.User;
@@ -71,7 +71,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                     SharedPreferences.Editor editor = mContext.getSharedPreferences("PREFS", Context.MODE_PRIVATE).edit();
                     editor.putString("postId", notification.getPostId());
                     editor.apply();
-                    ((FragmentActivity)mContext).getSupportFragmentManager().beginTransaction().addToBackStack(null).add(R.id.fragmentContainer, new PostDetailFragment()).commit();
+                    ((FragmentActivity)mContext).getSupportFragmentManager().beginTransaction().addToBackStack(null).add(R.id.fragmentContainer, new PostFragment()).commit();
                 }
                 else{
                     SharedPreferences.Editor editor = mContext.getSharedPreferences("PREFS", Context.MODE_PRIVATE).edit();

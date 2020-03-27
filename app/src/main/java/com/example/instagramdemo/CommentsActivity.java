@@ -46,11 +46,12 @@ public class CommentsActivity extends AppCompatActivity {
 
     String postId;
     String publisherId;
+    String comment;
 
     ParseUser parseUser;
 
     public void postComment(View view){
-        String comment = addCommentsEditText.getText().toString();
+        comment = addCommentsEditText.getText().toString();
         if(comment.isEmpty()){
             Toast.makeText(this, "Enter a comment", Toast.LENGTH_SHORT).show();
             return;
@@ -87,6 +88,7 @@ public class CommentsActivity extends AppCompatActivity {
 
         addCommentsEditText.setText("");
         readComments();
+        addNotifications();
 
     }
 
@@ -161,5 +163,17 @@ public class CommentsActivity extends AppCompatActivity {
                 adapter.notifyDataSetChanged();
             }
         });
+    }
+
+    private void addNotifications(){
+
+        ParseObject object = new ParseObject("Notifications");
+        object.put("notificationFor", publisherId);
+        object.put("notificationBy", parseUser.getUsername());
+        object.put("description", "commented: " + comment);
+        object.put("postId", postId);
+        object.put("isPost", true);
+        object.saveInBackground();
+
     }
 }

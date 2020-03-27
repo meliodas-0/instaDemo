@@ -383,4 +383,16 @@ public class ProfileFragment extends Fragment {
             }
         });
     }
+
+    private void addNotifications(){
+
+        ParseObject object = new ParseObject("Notifications");
+        object.put("notificationFor", profileId);
+        object.put("notificationBy", parseUser.getUsername());
+        object.put("description", " started following you ");
+        object.put("postId", "");
+        object.put("isPost", false);
+        object.saveInBackground();
+
+    }
 }

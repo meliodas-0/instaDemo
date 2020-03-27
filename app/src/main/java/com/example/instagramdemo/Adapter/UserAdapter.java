@@ -92,6 +92,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                             }
                         }
                     });
+                    addNotifications(user.getUsername());
                     button.setText("Following");
                 }else if(status.equals("Following")){
                     ParseQuery<ParseObject> query = ParseQuery.getQuery("FollowList");
@@ -158,6 +159,18 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                 }
             }
         });
+    }
+
+    private void addNotifications(String notificationFor){
+
+        ParseObject object = new ParseObject("Notifications");
+        object.put("notificationFor", notificationFor);
+        object.put("notificationBy", parseUser.getUsername());
+        object.put("description", " started Following ");
+        object.put("postId", "");
+        object.put("isPost", false);
+        object.saveInBackground();
+
     }
 
 }

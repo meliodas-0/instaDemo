@@ -25,6 +25,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/notificationItemUsernameTextView"
         android:textStyle="bold"
+        android:layout_marginStart="5dp"
         android:text="Username"
         android:textColor="@color/colorPrimaryDark"/>
 
@@ -32,6 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/notificationItemDescriptionTextView"
+            android:layout_marginStart="5dp"
             android:text="Description"
             android:maxLines="5"/>
 
