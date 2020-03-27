@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.AnimatedVectorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat;
 
 import com.example.instagramdemo.CommentsActivity;
 import com.example.instagramdemo.Fragments.ProfileFragment;
@@ -56,7 +59,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
 
         View view = LayoutInflater.from(mContext).inflate(R.layout.post_item,parent, false);
 
-        return new PostAdapter.ViewHolder(view);
+        return new ViewHolder(view);
     }
 
     @Override
@@ -170,8 +173,20 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
                                     }
                                 });
                             }
-                            Toast.makeText(mContext, "You have liked this post", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(mContext, "You have liked this post", Toast.LENGTH_SHORT).show();
                             holder.like.setTag("LIKED");
+                            final Drawable drawable = holder.likeAnimation.getDrawable();
+                            if(drawable instanceof AnimatedVectorDrawableCompat){
+                                AnimatedVectorDrawableCompat avdc = (AnimatedVectorDrawableCompat) drawable;
+                                //Toast.makeText(mContext, "AVDC", Toast.LENGTH_SHORT).show();
+                                holder.likeAnimation.setVisibility(View.VISIBLE);
+                                avdc.start();
+                            }else if(drawable instanceof AnimatedVectorDrawable){
+                                AnimatedVectorDrawable avd = (AnimatedVectorDrawable) drawable;
+                                holder.likeAnimation.setVisibility(View.VISIBLE);
+                                //Toast.makeText(mContext, "AVD", Toast.LENGTH_SHORT).show();
+                                avd.start();
+                            }
                         }
                         i=0;
                     }
@@ -264,12 +279,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
         return posts.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    static class ViewHolder extends RecyclerView.ViewHolder{
 
-        public ImageView imageProfile, postImage, like, comment, save;
-        public TextView username, noOfLikes, publisher, description, noOfComments;
+        ImageView imageProfile, postImage, like, comment, save, likeAnimation;
+        TextView username, noOfLikes, publisher, description, noOfComments;
 
-        public ViewHolder(@NonNull View itemView) {
+        ViewHolder(@NonNull View itemView) {
 
             super(itemView);
 
@@ -283,6 +298,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
             description = itemView.findViewById(R.id.description);
             noOfLikes   = itemView.findViewById(R.id.noOfLikes);
             noOfComments = itemView.findViewById(R.id.noOfComments);
+            likeAnimation = itemView.findViewById(R.id.postItemLikeAnimation);
         }
     }
 
