@@ -29,16 +29,24 @@
         android:layout_marginLeft="5dp"
         android:orientation="vertical"
         android:layout_centerVertical="true">
+
+        <TextView
+            android:id="@+id/username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:text="username"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="18sp" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/username"
-            android:text="username"
-            android:maxLines="1"
+            android:id="@+id/userItemFullName"
+            android:text="Full Name"
             android:textStyle="bold"
-            android:textSize="30sp"
-            android:textColor="@color/colorPrimaryDark"
-            />
+            android:textSize="16sp"
+            android:maxLines="1"
+            android:textColor="@color/colorAccent"/>
     </LinearLayout>
     <Button
         android:layout_width="wrap_content"

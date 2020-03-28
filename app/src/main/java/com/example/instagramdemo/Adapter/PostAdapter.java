@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat;
 
 import com.example.instagramdemo.CommentsActivity;
+import com.example.instagramdemo.FollowerActivity;
 import com.example.instagramdemo.Fragments.ProfileFragment;
 import com.example.instagramdemo.MainActivity;
 import com.example.instagramdemo.Model.Post;
@@ -233,6 +234,27 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
                 intent.putExtra("publisherId", post.getUsername());
                 mContext.startActivity(intent);
                 notifyDataSetChanged();
+            }
+        });
+
+        holder.noOfComments.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(mContext,CommentsActivity.class);
+                intent.putExtra("postId", post.getPostId());
+                intent.putExtra("publisherId", post.getUsername());
+                mContext.startActivity(intent);
+                notifyDataSetChanged();
+            }
+        });
+
+        holder.noOfLikes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(mContext, FollowerActivity.class);
+                intent.putExtra("id", post.getPostId());
+                intent.putExtra("title", "likes");
+                mContext.startActivity(intent);
             }
         });
 

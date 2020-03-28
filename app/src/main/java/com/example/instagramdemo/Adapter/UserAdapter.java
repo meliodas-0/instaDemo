@@ -15,6 +15,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.instagramdemo.Fragments.ProfileFragment;
+import com.example.instagramdemo.MainActivity;
 import com.example.instagramdemo.Model.User;
 import com.example.instagramdemo.R;
 import com.parse.FindCallback;
@@ -34,10 +35,12 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     private Context mContext;
     private List<User> mUsers;
     private ParseUser parseUser;
+    private boolean isFragment;
 
-    public UserAdapter(Context mContext, List<User> mUsers) {
+    public UserAdapter(Context mContext, List<User> mUsers, boolean isFragment) {
         this.mContext = mContext;
         this.mUsers = mUsers;
+        this.isFragment = isFragment;
     }
 
     @NonNull
@@ -56,6 +59,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         final User user = mUsers.get(position);
         holder.followButton.setVisibility(View.VISIBLE);
         holder.username.setText(user.getUsername());
+        holder.fullname.setText(user.getFullName());
         holder.imageProfile.setImageBitmap(user.getImageurl());
         if(user.getUsername().equals(parseUser.getUsername())){
             holder.followButton.setVisibility(View.GONE);
@@ -67,11 +71,19 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SharedPreferences sharedPreferences = mContext.getSharedPreferences("PREFS", Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString("profileId", holder.username.getText().toString());
-                editor.apply();
-                ((FragmentActivity)mContext).getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer,new ProfileFragment()).commit();
+
+
+                    SharedPreferences sharedPreferences = mContext.getSharedPreferences("PREFS", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("profileId", holder.username.getText().toString());
+                    editor.apply();
+                if(isFragment){
+                    ((FragmentActivity)mContext).getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer,new ProfileFragment()).addToBackStack(null).commit();
+                }else{
+                    Intent intent = new Intent(mContext, MainActivity.class);
+                    intent.putExtra("profileId", user.getId());
+                    mContext.startActivity(intent);
+                }
             }
         });
 
@@ -128,7 +140,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
     public class ViewHolder extends RecyclerView.ViewHolder{
 
-        public TextView username;
+        public TextView username, fullname;
         public CircleImageView imageProfile;
         public Button followButton;
 
@@ -138,6 +150,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             username = itemView.findViewById(R.id.username);
             imageProfile = itemView.findViewById(R.id.image_profile);
             followButton = itemView.findViewById(R.id.followButton);
+            fullname = itemView.findViewById(R.id.userItemFullName);
 
         }
     }

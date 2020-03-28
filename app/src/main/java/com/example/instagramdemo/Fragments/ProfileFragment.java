@@ -20,12 +20,14 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.instagramdemo.Adapter.ProfilePhotosAdapter;
 import com.example.instagramdemo.EditProfileActivity;
+import com.example.instagramdemo.FollowerActivity;
 import com.example.instagramdemo.MainActivity;
 import com.example.instagramdemo.Model.Post;
 import com.example.instagramdemo.Model.User;
@@ -46,18 +48,19 @@ import java.util.List;
 
 public class ProfileFragment extends Fragment {
 
-    ImageView profilePic;
-    TextView noOfPosts, noOfFollowers, noOfFollowings, fullname, bio, username;
-    Button editProfile;
-    ParseUser parseUser;
-    String profileId;
-    ImageButton posts, saved;
-    RecyclerView recyclerView;
-    ProfilePhotosAdapter myPostsAdapter, savedPostsAdapter;
-    List<Post> myPostList, savedPostList;
-    Toolbar toolbar;
+    private ImageView profilePic;
+    private TextView noOfPosts, noOfFollowers, noOfFollowings, fullname, bio, username;
+    private Button editProfile;
+    private ParseUser parseUser;
+    private String profileId;
+    private ImageButton posts, saved;
+    private RecyclerView recyclerView;
+    private ProfilePhotosAdapter myPostsAdapter, savedPostsAdapter;
+    private List<Post> myPostList, savedPostList;
+    private Toolbar toolbar;
+    private LinearLayout fragmentProfileFollowersLinearLayout, fragmentProfileFollowingLinearLayout;
 
-    public void editProfileClicked(View view){
+    private void editProfileClicked(View view){
 
         String s = editProfile.getText().toString();
         if(s.equals("Edit Profile")){
@@ -69,6 +72,7 @@ public class ProfileFragment extends Fragment {
             object.put("follower", parseUser.getUsername());
             object.put("follows",profileId);
             editProfile.setText("Following");
+            addNotifications();
             object.saveInBackground(new SaveCallback() {
                 @Override
                 public void done(ParseException e) {
@@ -112,9 +116,7 @@ public class ProfileFragment extends Fragment {
 
         findViewByIds(view);
 
-        Toast.makeText(getContext(), MainActivity.fragmentManager.getBackStackEntryCount()+"", Toast.LENGTH_SHORT).show();
-
-        if(MainActivity.fragmentManager.getBackStackEntryCount() >= 1){
+        if(MainActivity.fragmentManager.getBackStackEntryCount() >= 1 || !getActivity().isTaskRoot()){
 
             ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
             ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -123,7 +125,11 @@ public class ProfileFragment extends Fragment {
                 @Override
                 public void onClick(View view) {
 
+                    if(MainActivity.fragmentManager.getBackStackEntryCount() >= 1)
                     ((FragmentActivity)getContext()).getSupportFragmentManager().popBackStack();
+                    else if(!getActivity().isTaskRoot()){
+                        getActivity().finish();
+                    }
                 }
             });
         }
@@ -149,11 +155,6 @@ public class ProfileFragment extends Fragment {
         return view;
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-
-    }
 
     private void sharedPrefs() {
 
@@ -191,6 +192,8 @@ public class ProfileFragment extends Fragment {
         saved = view.findViewById(R.id.profileSavedImageButton);
         recyclerView = view.findViewById(R.id.profilePostsRecyclerView);
         toolbar = view.findViewById(R.id.profileToolbar);
+        fragmentProfileFollowersLinearLayout = view.findViewById(R.id.fragmentProfileFollowersLinearLayout);
+        fragmentProfileFollowingLinearLayout = view.findViewById(R.id.fragmentProfileFollowingLinearLayout);
 
     }
 
@@ -217,13 +220,32 @@ public class ProfileFragment extends Fragment {
             }
         });
 
+        fragmentProfileFollowersLinearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getContext(), FollowerActivity.class);
+                intent.putExtra("id", profileId);
+                intent.putExtra("title", "followers");
+                startActivity(intent);
+            }
+        });
+        fragmentProfileFollowingLinearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getContext(), FollowerActivity.class);
+                intent.putExtra("id", profileId);
+                intent.putExtra("title", "following");
+                startActivity(intent);
+            }
+        });
+
     }
 
-    public void postsImageButtonClicked(){
+    private void postsImageButtonClicked(){
         recyclerView.setAdapter(myPostsAdapter);
     }
 
-    public void savedImageButtonClicked(){
+    private void savedImageButtonClicked(){
         recyclerView.setAdapter(savedPostsAdapter);
     }
 

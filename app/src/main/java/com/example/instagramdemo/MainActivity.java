@@ -2,14 +2,14 @@ package com.example.instagramdemo;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.example.instagramdemo.Fragments.HomeFragment;
@@ -19,12 +19,16 @@ import com.example.instagramdemo.Fragments.SearchFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.parse.ParseUser;
 
+import java.util.Objects;
+
 public class MainActivity extends AppCompatActivity {
 
     BottomNavigationView bottomNavigationView;
     Fragment selectedFragment = null;
     public static int globalStackedFragments = 0;
     public static FragmentManager fragmentManager;
+    private Toolbar toolbar;
+    public boolean isTaskRoot;
 
     @Override
     protected void onStart() {
@@ -40,7 +44,21 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        isTaskRoot = isTaskRoot();
         bottomNavigationView = findViewById(R.id.bottomIconBar);
+        toolbar = findViewById(R.id.activityMainToolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
+        if(!isTaskRoot && getSupportFragmentManager().getBackStackEntryCount()!=0){
+            toolbar.setVisibility(View.VISIBLE);
+        }
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {

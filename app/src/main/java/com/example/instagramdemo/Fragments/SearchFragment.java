@@ -53,7 +53,7 @@ public class SearchFragment extends Fragment {
 
         mUsers = new ArrayList<>();
         u = new ArrayList<>();
-        adapter = new UserAdapter(getContext(),mUsers);
+        adapter = new UserAdapter(getContext(),mUsers, true);
         recyclerView.setAdapter(adapter);
 
         searchUsers("");
