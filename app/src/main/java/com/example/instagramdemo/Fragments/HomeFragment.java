@@ -8,9 +8,12 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.example.instagramdemo.Adapter.PostAdapter;
 import com.example.instagramdemo.Model.Post;
@@ -23,16 +26,21 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 
 public class HomeFragment extends Fragment {
 
-    RecyclerView recyclerView;
+    private RecyclerView recyclerView;
     public static PostAdapter adapter;
-    List<Post> posts;
-    List<String> following;
+    private List<Post> posts;
+    private List<String> followingList;
+    ProgressBar progressBar;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -40,18 +48,19 @@ public class HomeFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_home,container, false);
 
-
+        progressBar = view.findViewById(R.id.fragmentHomeProgressBar);
         recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
 
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
         manager.setOrientation(RecyclerView.VERTICAL);
-        manager.setReverseLayout(true);
-        manager.setStackFromEnd(true);
+        //manager.setReverseLayout(true);
+        //manager.setStackFromEnd(true);
         recyclerView.setLayoutManager(manager);
         posts = new ArrayList<>();
         adapter = new PostAdapter(getContext(), posts);
         recyclerView.setAdapter(adapter);
+        if(ParseUser.getCurrentUser() != null)
         isFollowing();
 
         return view;
@@ -59,8 +68,8 @@ public class HomeFragment extends Fragment {
 
     private void isFollowing(){
 
-        following = new ArrayList<>();
-        following.clear();
+        followingList = new ArrayList<>();
+        followingList.clear();
         posts.clear();
         adapter.notifyDataSetChanged();
 
@@ -74,8 +83,8 @@ public class HomeFragment extends Fragment {
 
                     for(ParseObject object: objects){
                         String username = object.get("follows").toString();
-                        if(!following.contains(username)){
-                            following.add(username);
+                        if(!followingList.contains(username)){
+                            followingList.add(username);
                         }
                     }
 
@@ -96,21 +105,22 @@ public class HomeFragment extends Fragment {
                 if(e == null){
                     posts.clear();
 
-                    for(ParseObject object : objects){
+                    for(final ParseObject object : objects){
+                        final long timeDate = Long.parseLong(new SimpleDateFormat("yyyyMMddHHmmss").format(object.getCreatedAt())); //Set time here and check if the format is correct or not
 
                         ParseFile file = (ParseFile)object.get("image");
-                        final ParseObject newObject = object;
                         file.getDataInBackground(new GetDataCallback() {
                             @Override
                             public void done(byte[] data, ParseException e) {
 
                                 if(e == null){
                                     Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
-
-                                    Post post = new Post(newObject.get("username").toString(),newObject.get("description").toString(),newObject.getObjectId(),bitmap);
-                                    if(following.contains(post.getUsername())) {
+                                    Post post = new Post(object.get("username").toString(),object.get("description").toString(),object.getObjectId(),bitmap, timeDate);
+                                    if(followingList.contains(post.getUsername())) {
                                         posts.add(post);
+                                        Collections.sort(posts);
                                         adapter.notifyDataSetChanged();
+                                        progressBar.setVisibility(View.GONE);
                                     }
                                 }
 

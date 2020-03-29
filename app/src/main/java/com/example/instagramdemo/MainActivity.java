@@ -8,9 +8,9 @@ import androidx.fragment.app.FragmentManager;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.example.instagramdemo.Fragments.HomeFragment;
 import com.example.instagramdemo.Fragments.NotificationFragment;
@@ -18,8 +18,6 @@ import com.example.instagramdemo.Fragments.ProfileFragment;
 import com.example.instagramdemo.Fragments.SearchFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.parse.ParseUser;
-
-import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -100,7 +98,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         Bundle intent = getIntent().getExtras();
-        if(intent != null){
+        if(intent != null && !isTaskRoot){
+            Log.i("Intent", intent.toString());
             fragmentManager.beginTransaction().replace(R.id.fragmentContainer, new ProfileFragment()).commit();
         }else{
             fragmentManager.beginTransaction().replace(R.id.fragmentContainer,new HomeFragment()).commit();

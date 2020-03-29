@@ -31,6 +31,7 @@ import com.example.instagramdemo.FollowerActivity;
 import com.example.instagramdemo.MainActivity;
 import com.example.instagramdemo.Model.Post;
 import com.example.instagramdemo.Model.User;
+import com.example.instagramdemo.OptionsActivity;
 import com.example.instagramdemo.R;
 import com.parse.CountCallback;
 import com.parse.FindCallback;
@@ -43,12 +44,14 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ProfileFragment extends Fragment {
 
-    private ImageView profilePic;
+    private ImageView profilePic, optionsImageView;
     private TextView noOfPosts, noOfFollowers, noOfFollowings, fullname, bio, username;
     private Button editProfile;
     private ParseUser parseUser;
@@ -111,6 +114,10 @@ public class ProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
+
+        if(ParseUser.getCurrentUser() == null){
+            return view;
+        }
 
         parseUser = ParseUser.getCurrentUser();
 
@@ -194,6 +201,7 @@ public class ProfileFragment extends Fragment {
         toolbar = view.findViewById(R.id.profileToolbar);
         fragmentProfileFollowersLinearLayout = view.findViewById(R.id.fragmentProfileFollowersLinearLayout);
         fragmentProfileFollowingLinearLayout = view.findViewById(R.id.fragmentProfileFollowingLinearLayout);
+        optionsImageView = view.findViewById(R.id.profileOptionsImageView);
 
     }
 
@@ -236,6 +244,16 @@ public class ProfileFragment extends Fragment {
                 intent.putExtra("id", profileId);
                 intent.putExtra("title", "following");
                 startActivity(intent);
+            }
+        });
+
+        optionsImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(profileId.equals(ParseUser.getCurrentUser().getUsername())){
+                    Intent intent = new Intent(getContext(), OptionsActivity.class);
+                    startActivity(intent);
+                }
             }
         });
 
@@ -350,8 +368,10 @@ public class ProfileFragment extends Fragment {
                             public void done(byte[] data, ParseException e) {
                                 if(e == null){
                                     Bitmap image = BitmapFactory.decodeByteArray(data, 0, data.length);
-                                    Post post = new Post(profileId, object.get("description").toString(), object.getObjectId(), image);
+                                    final long timeDate = Long.parseLong(new SimpleDateFormat("yyyyMMddHHmmss").format(object.getCreatedAt()));
+                                    Post post = new Post(profileId, object.get("description").toString(), object.getObjectId(), image, timeDate);
                                     myPostList.add(post);
+                                    Collections.sort(myPostList);
                                     myPostsAdapter.notifyDataSetChanged();
                                 }
                             }
@@ -385,8 +405,10 @@ public class ProfileFragment extends Fragment {
                                         public void done(byte[] data, ParseException e) {
                                             if(e == null){
                                                 Bitmap image = BitmapFactory.decodeByteArray(data, 0, data.length);
-                                                Post post = new Post(postObject.get("username").toString(), postObject.get("description").toString(),postObject.getObjectId(),image);
+                                                final long timeDate = Long.parseLong(new SimpleDateFormat("yyyyMMddHHmmss").format(postObject.getCreatedAt()));
+                                                Post post = new Post(postObject.get("username").toString(), postObject.get("description").toString(),postObject.getObjectId(),image, timeDate);
                                                 savedPostList.add(post);
+                                                Collections.sort(savedPostList);
                                                 savedPostsAdapter.notifyDataSetChanged();
                                             }else{
                                                 Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();

@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/post"
+        app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -33,17 +33,30 @@
 
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/post"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="200dp"
-        android:scaleType="fitXY"
-        android:adjustViewBounds="true"
-        android:src="@mipmap/ic_launcher"
+        android:id="@+id/constraintLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2" >
+
+        <ImageView
+            android:id="@+id/post"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:adjustViewBounds="true"
+            android:minHeight="200dp"
+            android:scaleType="fitXY"
+            android:src="@mipmap/ic_launcher"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
     <RelativeLayout
         android:id="@+id/relativeLayout3"
@@ -51,7 +64,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/post">
+        app:layout_constraintTop_toBottomOf="@id/constraintLayout">
 
 
         <ImageView
@@ -91,7 +104,7 @@
         android:text="noOfLikes"
         android:textColor="@color/colorPrimaryDark"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@+id/post"
+        app:layout_constraintStart_toStartOf="@+id/constraintLayout"
         app:layout_constraintTop_toBottomOf="@+id/relativeLayout3" />
 
     <TextView
@@ -103,7 +116,7 @@
         android:text="publisher"
         android:textColor="@color/colorPrimaryDark"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@+id/post"
+        app:layout_constraintStart_toStartOf="@+id/constraintLayout"
         app:layout_constraintTop_toBottomOf="@id/noOfLikes" />
 
     <TextView
@@ -127,17 +140,17 @@
         android:text="noOfComments"
         android:textColor="@color/colorAccent"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@+id/post"
+        app:layout_constraintStart_toStartOf="@+id/constraintLayout"
         app:layout_constraintTop_toBottomOf="@+id/description" />
 
     <ImageView
         android:id="@+id/postItemLikeAnimation"
         android:layout_width="120dp"
         android:layout_height="120dp"
-        app:layout_constraintBottom_toBottomOf="@+id/post"
-        app:layout_constraintEnd_toEndOf="@+id/post"
+        app:layout_constraintBottom_toBottomOf="@+id/constraintLayout"
+        app:layout_constraintEnd_toEndOf="@+id/constraintLayout"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/post"
+        app:layout_constraintTop_toTopOf="@+id/constraintLayout"
         android:alpha="0.5"
         android:visibility="gone"
         app:srcCompat="@drawable/ic_like_black_24dp" />

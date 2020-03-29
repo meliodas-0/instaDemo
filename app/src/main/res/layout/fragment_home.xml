@@ -5,6 +5,11 @@
     android:layout_height="match_parent"
     tools:context=".Fragments.HomeFragment">
 
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/fragmentHomeProgressBar"
+        android:layout_centerInParent="true"/>
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"

@@ -17,7 +17,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat;
@@ -25,7 +24,6 @@ import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat;
 import com.example.instagramdemo.CommentsActivity;
 import com.example.instagramdemo.FollowerActivity;
 import com.example.instagramdemo.Fragments.ProfileFragment;
-import com.example.instagramdemo.MainActivity;
 import com.example.instagramdemo.Model.Post;
 import com.example.instagramdemo.Model.User;
 import com.example.instagramdemo.R;
@@ -44,9 +42,9 @@ import java.util.List;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
 
-    public Context mContext;
+    private Context mContext;
     public List<Post> posts;
-    public ParseUser parseUser;
+    private ParseUser parseUser;
     int i = 0;
 
     public PostAdapter(Context mContext, List<Post> posts) {

@@ -17,7 +17,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         android:usesCleartextTraffic="true">
-        <activity android:name=".FollowerActivity"></activity>
+        <activity android:name=".OptionsActivity"></activity>
+        <activity android:name=".FollowerActivity" />
         <activity android:name=".EditProfileActivity" />
         <activity android:name=".CommentsActivity" />
         <activity android:name=".LoginSignupActivity" />

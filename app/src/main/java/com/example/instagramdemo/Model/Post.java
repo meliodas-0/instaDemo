@@ -2,23 +2,34 @@ package com.example.instagramdemo.Model;
 
 import android.graphics.Bitmap;
 
-public class Post {
+public class Post implements Comparable<Post> {
 
 
     private String username;
     private String description;
     private String postId;
     private Bitmap image;
+    private long dateTime;
 
-    public Post( String username, String description, String postId, Bitmap image) {
+    public Post( String username, String description, String postId, Bitmap image, long dateTime) {
 
         this.username = username;
         this.description = description;
         this.postId = postId;
         this.image = image;
+        this.dateTime = dateTime;
     }
 
-    public Post() {
+    public void setPostId(String postId) {
+        this.postId = postId;
+    }
+
+    public long getDateTime() {
+        return dateTime;
+    }
+
+    public void setDateTime(long dateTime) {
+        this.dateTime = dateTime;
     }
 
     public String getUsername() {
@@ -51,5 +62,11 @@ public class Post {
 
     public void setImage(Bitmap image) {
         this.image = image;
+    }
+
+    @Override
+    public int compareTo(Post post) {
+        Long number = this.dateTime;
+        return - number.compareTo(post.dateTime);
     }
 }
