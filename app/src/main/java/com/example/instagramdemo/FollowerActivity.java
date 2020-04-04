@@ -81,6 +81,11 @@ public class FollowerActivity extends AppCompatActivity {
                 Log.i("Clicked", "followers");
                 getFollowers();
                 break;
+            case "views":
+                Log.i("Clicked", "Views");
+                idList = intent.getStringArrayListExtra("Viewed By");
+                showUsers();
+                break;
 
         }
 

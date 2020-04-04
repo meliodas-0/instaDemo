@@ -8,15 +8,15 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.example.instagramdemo.Adapter.PostAdapter;
+import com.example.instagramdemo.Adapter.StoryAdapter;
 import com.example.instagramdemo.Model.Post;
+import com.example.instagramdemo.Model.Story;
 import com.example.instagramdemo.R;
 import com.parse.FindCallback;
 import com.parse.GetDataCallback;
@@ -28,7 +28,6 @@ import com.parse.ParseUser;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -36,10 +35,13 @@ import java.util.List;
 
 public class HomeFragment extends Fragment {
 
-    private RecyclerView recyclerView;
-    public static PostAdapter adapter;
+    private RecyclerView recyclerViewPosts, recyclerViewStories;
+    public static PostAdapter postAdapter;
+    public static StoryAdapter storyAdapter;
     private List<Post> posts;
     private List<String> followingList;
+    private List<Story> storyList;
+    private List<String> storiesBy;
     ProgressBar progressBar;
 
     @Override
@@ -49,19 +51,27 @@ public class HomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home,container, false);
 
         progressBar = view.findViewById(R.id.fragmentHomeProgressBar);
-        recyclerView = view.findViewById(R.id.recycler_view);
-        recyclerView.setHasFixedSize(true);
+        recyclerViewPosts = view.findViewById(R.id.recycler_view);
+        recyclerViewPosts.setHasFixedSize(true);
+
+        recyclerViewStories = view.findViewById(R.id.recyclerViewStories);
+        recyclerViewStories.setHasFixedSize(true);
+        recyclerViewStories.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        storyList = new ArrayList<>();
+        storiesBy = new ArrayList<>();
+        storyAdapter = new StoryAdapter(getContext(), storyList);
+        recyclerViewStories.setAdapter(storyAdapter);
 
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
         manager.setOrientation(RecyclerView.VERTICAL);
-        //manager.setReverseLayout(true);
-        //manager.setStackFromEnd(true);
-        recyclerView.setLayoutManager(manager);
+        recyclerViewPosts.setLayoutManager(manager);
         posts = new ArrayList<>();
-        adapter = new PostAdapter(getContext(), posts);
-        recyclerView.setAdapter(adapter);
-        if(ParseUser.getCurrentUser() != null)
-        isFollowing();
+        postAdapter = new PostAdapter(getContext(), posts);
+        recyclerViewPosts.setAdapter(postAdapter);
+        if(ParseUser.getCurrentUser() != null) {
+            isFollowing();
+        }
+
 
         return view;
     }
@@ -71,7 +81,7 @@ public class HomeFragment extends Fragment {
         followingList = new ArrayList<>();
         followingList.clear();
         posts.clear();
-        adapter.notifyDataSetChanged();
+        postAdapter.notifyDataSetChanged();
 
         ParseQuery<ParseObject> query = ParseQuery.getQuery("FollowList");
         query.whereEqualTo("follower", ParseUser.getCurrentUser().getUsername());
@@ -89,6 +99,7 @@ public class HomeFragment extends Fragment {
                     }
 
                     readPost();
+                    readStories();
                 }
             }
         });
@@ -119,7 +130,7 @@ public class HomeFragment extends Fragment {
                                     if(followingList.contains(post.getUsername())) {
                                         posts.add(post);
                                         Collections.sort(posts);
-                                        adapter.notifyDataSetChanged();
+                                        postAdapter.notifyDataSetChanged();
                                         progressBar.setVisibility(View.GONE);
                                     }
                                 }
@@ -136,4 +147,56 @@ public class HomeFragment extends Fragment {
 
     }
 
+    private void readStories(){
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Stories");
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> objects, ParseException e) {
+                if(e==null){
+                    storyList.clear();
+                    Story story = new Story(null,
+                            "",
+                            ParseUser.getCurrentUser().getUsername(),
+                            new Date(),
+                            new ArrayList<String>());
+                    storyList.add(story);
+                    storiesBy.add(ParseUser.getCurrentUser().getUsername());
+                    storyAdapter.notifyDataSetChanged();
+                    if (objects != null && objects.size() != 0) {
+
+                        for(ParseObject object: objects){
+                            String username = object.getString("storyBy");
+                            Date createdAt = object.getCreatedAt();
+                            long time = Long.parseLong(new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()))
+                                    - Long.parseLong(new SimpleDateFormat("yyyyMMddHHmmss").format(createdAt));
+                            if(time<1000000) {
+                                if (!storiesBy.contains(username) && followingList.contains(username)) {
+                                    story = new Story(null,
+                                            "",
+                                            username,
+                                            new Date(),
+                                            new ArrayList<String>());
+                                    storyList.add(story);
+                                    storiesBy.add(username);
+                                    Collections.sort(storyList);
+                                    storyAdapter.notifyDataSetChanged();
+                                }
+                            }
+                            else{
+                                object.deleteInBackground();
+                            }
+                        }
+
+                    }
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        storyAdapter.notifyDataSetChanged();
+        postAdapter.notifyDataSetChanged();
+    }
 }

@@ -7,14 +7,14 @@ public class User {
     private String id;
     private String fullname;
     private String username;
-    private Bitmap imageurl;
+    private Bitmap image;
     private String bio;
 
-    public User(String id, String username,String fullname, Bitmap imageurl, String bio) {
+    public User(String id, String username, String fullname, Bitmap image, String bio) {
         this.id = id;
         this.fullname = fullname;
         this.username = username;
-        this.imageurl = imageurl;
+        this.image = image;
         this.bio = bio;
     }
 
@@ -34,14 +34,14 @@ public class User {
         this.username = username;
     }
 
-    public Bitmap getImageurl() {
-        return imageurl;
+    public Bitmap getImage() {
+        return image;
     }
 
-    public User(String id, String username, Bitmap imageurl, String bio) {
+    public User(String id, String username, Bitmap image, String bio) {
         this.id = id;
         this.username = username;
-        this.imageurl = imageurl;
+        this.image = image;
         this.bio = bio;
     }
 

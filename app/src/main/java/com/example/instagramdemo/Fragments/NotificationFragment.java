@@ -64,7 +64,7 @@ public class NotificationFragment extends Fragment {
                             Notification notification = new Notification(object.getString("notificationBy"), object.getString("description"), object.getString("postId"), object.getBoolean("isPost"));
                             notificationList.add(notification);
                         }
-                        Collections.reverse(notificationList);
+                        //Collections.reverse(notificationList);
                         adapter.notifyDataSetChanged();
                     }
                 }

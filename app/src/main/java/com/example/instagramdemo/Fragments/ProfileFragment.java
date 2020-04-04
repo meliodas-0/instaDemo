@@ -283,7 +283,7 @@ public class ProfileFragment extends Fragment {
                                 User user = new User(object.getObjectId(),object.get("username").toString(), object.getString("fullname"),bitmap, object.get("bio").toString());
                                 username.setText(user.getUsername());
                                 fullname.setText(user.getFullName());
-                                profilePic.setImageBitmap(user.getImageurl());
+                                profilePic.setImageBitmap(user.getImage());
                                 bio.setText(user.getBio());
                             }
                         }

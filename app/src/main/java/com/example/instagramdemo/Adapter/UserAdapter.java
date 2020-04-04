@@ -60,7 +60,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         holder.followButton.setVisibility(View.VISIBLE);
         holder.username.setText(user.getUsername());
         holder.fullname.setText(user.getFullName());
-        holder.imageProfile.setImageBitmap(user.getImageurl());
+        holder.imageProfile.setImageBitmap(user.getImage());
         if(user.getUsername().equals(parseUser.getUsername())){
             holder.followButton.setVisibility(View.GONE);
         }
@@ -179,7 +179,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         ParseObject object = new ParseObject("Notifications");
         object.put("notificationFor", notificationFor);
         object.put("notificationBy", parseUser.getUsername());
-        object.put("description", " started Following ");
+        object.put("description", " started following you.");
         object.put("postId", "");
         object.put("isPost", false);
         object.saveInBackground();

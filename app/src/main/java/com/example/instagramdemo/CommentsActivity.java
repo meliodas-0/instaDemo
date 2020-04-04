@@ -105,7 +105,7 @@ public class CommentsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                HomeFragment.adapter.notifyDataSetChanged();
+                HomeFragment.postAdapter.notifyDataSetChanged();
                 SharedPreferences sharedPreferences = getSharedPreferences("PREFS", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString("profileId", parseUser.getUsername());
