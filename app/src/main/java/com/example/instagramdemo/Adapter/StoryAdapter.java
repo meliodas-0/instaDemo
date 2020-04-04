@@ -4,12 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
@@ -100,13 +98,6 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.ViewHolder>{
         }
     }
 
-//    public int getItemViewType(int position){
-//        if(position == 0){
-//            return 0;
-//        }
-//        return 1;
-//    }
-
     private void getUserInfo(final ViewHolder holder, final String userId, final int position){
         ParseQuery<ParseUser> query = ParseUser.getQuery();
         query.whereEqualTo("username", userId);
@@ -158,41 +149,4 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.ViewHolder>{
             });
         }
     }
-
-//    private void seeStory(final TextView textView, final CircleImageView imageView){
-//        ParseQuery<ParseObject> query = ParseQuery.getQuery("Stories");
-//        query.whereEqualTo("storyBy", parseUser.getUsername());
-//        query.addDescendingOrder("createdAt");
-//        query.findInBackground(new FindCallback<ParseObject>() {
-//            @Override
-//            public void done(List<ParseObject> objects, ParseException e) {
-//                if(e == null){
-//                    int count = 0;
-//                    long timeCurrent = System.currentTimeMillis();
-//                    for(final ParseObject object: objects){
-//                        final Date createdDate = object.getCreatedAt();
-//                        Date now = new Date();
-//                        long timeElapsed = Long.parseLong(new SimpleDateFormat("yyyyMMddHHmmss").format(createdDate)) - Long.parseLong(new SimpleDateFormat("yyyyMMddHHmmss").format(now));
-//                        if(timeElapsed < 86400) {
-//                            ParseFile file = (ParseFile) object.get("story");
-//                            file.getDataInBackground(new GetDataCallback() {
-//                                @Override
-//                                public void done(byte[] data, ParseException e) {
-//                                    if (e == null) {
-//                                        Bitmap image = BitmapFactory.decodeByteArray(data, 0, data.length);
-//                                        Story story = new Story(image, object.getLong("timeStart"), object.getLong("timeEnd"), object.getObjectId(), object.getString("storyBy"), createdDate, object.<String>getList("seenBy"));
-//                                        mStory.add(story);
-//                                        notifyDataSetChanged();
-//                                    }
-//                                }
-//                            });
-//                        }else{
-//                            object.deleteInBackground();
-//                        }
-//                    }
-//                }
-//            }
-//        });
-//    }
-
 }
