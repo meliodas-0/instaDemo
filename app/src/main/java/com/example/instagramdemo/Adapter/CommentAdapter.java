@@ -1,6 +1,8 @@
 package com.example.instagramdemo.Adapter;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -15,6 +17,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.instagramdemo.CommentsActivity;
 import com.example.instagramdemo.MainActivity;
 import com.example.instagramdemo.Model.Comment;
 import com.example.instagramdemo.R;
@@ -22,6 +25,7 @@ import com.parse.GetCallback;
 import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
@@ -52,13 +56,63 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
 
         parseUser = ParseUser.getCurrentUser();
         final Comment comment = mComments.get(position);
 
         holder.comment.setText(comment.getComment());
         getUserInfo(holder.profilePic, holder.username, comment.getPublisher());
+
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                if(!comment.getPublisher().equals(parseUser.getUsername()))
+                    return false;
+                new AlertDialog.Builder(mContext)
+                        .setTitle("Delete Comment")
+                        .setMessage("Do you really want to delete this comment")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                ParseQuery<ParseObject> query = ParseQuery.getQuery("Comments");
+                                query.whereEqualTo("objectId", comment.getCommentId());
+                                query.getFirstInBackground(new GetCallback<ParseObject>() {
+                                    @Override
+                                    public void done(ParseObject object, ParseException e) {
+                                        if(e==null){
+                                            object.deleteInBackground();
+                                            Toast.makeText(mContext, "Deleted", Toast.LENGTH_SHORT).show();
+                                            mComments.remove(position);
+                                            notifyDataSetChanged();
+                                            ParseQuery<ParseObject> query1 = ParseQuery.getQuery("Posts");
+                                            query1.whereEqualTo("objectId", CommentsActivity.postId);
+                                            query1.getFirstInBackground(new GetCallback<ParseObject>() {
+                                                @Override
+                                                public void done(ParseObject object, ParseException e) {
+                                                    if(e==null){
+                                                        int i = object.getInt("noOfComment");
+                                                        object.put("noOfComment", --i);
+                                                        object.saveInBackground();
+                                                    }
+                                                }
+                                            });
+                                        }
+                                    }
+                                });
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                            }
+                        })
+                        .show();
+
+                return true;
+            }
+        });
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

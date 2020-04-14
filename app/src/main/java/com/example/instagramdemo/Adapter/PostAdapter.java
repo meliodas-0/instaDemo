@@ -1,6 +1,7 @@
 package com.example.instagramdemo.Adapter;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -10,13 +11,18 @@ import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat;
@@ -256,6 +262,49 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
             }
         });
 
+        holder.more.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PopupMenu menu = new PopupMenu(mContext, view);
+                menu.inflate(R.menu.post_menu);
+                if(!post.getUsername().equals(parseUser.getUsername())){
+                    menu.getMenu().findItem(R.id.postMenuEditOption).setVisible(false);
+                    menu.getMenu().findItem(R.id.postMenuDeleteOption).setVisible(false);
+                }
+                menu.show();
+                menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+                        switch (menuItem.getItemId()){
+                            case R.id.postMenuEditOption:
+                                editPost(post.getPostId());
+                                return true;
+                            case R.id.postMenuDeleteOption:
+                                ParseQuery<ParseObject> query = ParseQuery.getQuery("Posts");
+                                query.whereEqualTo("objectId", post.getPostId());
+                                query.getFirstInBackground(new GetCallback<ParseObject>() {
+                                    @Override
+                                    public void done(ParseObject object, ParseException e) {
+                                        if(e == null){
+                                            object.deleteInBackground();
+                                            posts.remove(position);
+                                            notifyDataSetChanged();
+                                            Toast.makeText(mContext, "Deleted!", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
+                                return true;
+                            case R.id.postMenuReportOption:
+                                Toast.makeText(mContext, "Report Clicked", Toast.LENGTH_SHORT).show();
+                                return true;
+                            default: return false;
+
+                        }
+                    }
+                });
+            }
+        });
+
     }
 
     private void isSaved(String postId, final ImageView save) {
@@ -286,7 +335,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
 
     static class ViewHolder extends RecyclerView.ViewHolder{
 
-        ImageView imageProfile, postImage, like, comment, save, likeAnimation;
+        ImageView imageProfile, postImage, like, comment, save, likeAnimation, more;
         TextView username, noOfLikes, publisher, description, noOfComments;
 
         ViewHolder(@NonNull View itemView) {
@@ -304,6 +353,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
             noOfLikes   = itemView.findViewById(R.id.noOfLikes);
             noOfComments = itemView.findViewById(R.id.noOfComments);
             likeAnimation = itemView.findViewById(R.id.postItemLikeAnimation);
+            more = itemView.findViewById(R.id.postItemMoreImageView);
         }
     }
 
@@ -466,4 +516,55 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
 
 
     }
+
+    private void editPost(final String postId){
+
+        final EditText editText = new EditText(mContext);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                1);
+        editText.setLayoutParams(lp);
+        getText(postId, editText);
+
+        new AlertDialog.Builder(mContext)
+                .setTitle("Edit Post")
+                .setView(editText)
+                .setPositiveButton("Edit", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        ParseQuery<ParseObject> query = ParseQuery.getQuery("Posts");
+                        query.whereEqualTo("objectId", postId);
+                        query.getFirstInBackground(new GetCallback<ParseObject>() {
+                            @Override
+                            public void done(ParseObject object, ParseException e) {
+                                object.put("description", editText.getText().toString());
+                                object.saveInBackground();
+                                notifyDataSetChanged();
+                            }
+                        });
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                })
+                .show();
+    }
+
+    private void getText(String postId, final EditText editText){
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Posts");
+        query.whereEqualTo("objectId", postId);
+        query.getFirstInBackground(new GetCallback<ParseObject>() {
+            @Override
+            public void done(ParseObject object, ParseException e) {
+                if(e == null){
+                    editText.setText(object.getString("description"));
+                }
+            }
+        });
+    }
+
 }

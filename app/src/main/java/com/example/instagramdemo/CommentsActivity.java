@@ -44,7 +44,7 @@ public class CommentsActivity extends AppCompatActivity {
     private CommentAdapter adapter;
     private List<Comment> commentList;
 
-    String postId;
+    public static String postId;
     String publisherId;
     String comment;
 
@@ -156,7 +156,7 @@ public class CommentsActivity extends AppCompatActivity {
             public void done(List<ParseObject> objects, ParseException e) {
                 commentList.clear();
                 for(ParseObject object : objects){
-                    Comment comment = new Comment(object.get("comment").toString(), object.get("commentBy").toString());
+                    Comment comment = new Comment(object.get("comment").toString(), object.get("commentBy").toString(), object.getObjectId());
                     commentList.add(comment);
                 }
                 Log.i("commentList", commentList.toString());

@@ -4,9 +4,7 @@ public class Comment {
 
     private String comment;
     private String publisher;
-
-    public Comment() {
-    }
+    private String commentId;
 
     public String getComment() {
         return comment;
@@ -24,8 +22,17 @@ public class Comment {
         this.publisher = publisher;
     }
 
-    public Comment(String comment, String publisher) {
+    public Comment(String comment, String publisher, String commentId) {
         this.comment = comment;
         this.publisher = publisher;
+        this.commentId = commentId;
+    }
+
+    public String getCommentId() {
+        return commentId;
+    }
+
+    public void setCommentId(String commentId) {
+        this.commentId = commentId;
     }
 }
